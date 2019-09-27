@@ -161,6 +161,9 @@ to verify that the lines appear parallel in the warped image.
 
 ![Perspective transform][image7]
 
+Actual transformation matrix is found by calling this function:
+`warp.M = cv2.getPerspectiveTransform(src, dst)`
+
 ### 4. Fitting polynom
 
 #### Initialization
