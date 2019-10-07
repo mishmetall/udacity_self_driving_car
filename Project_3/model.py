@@ -28,7 +28,7 @@ class LeNet():
         return int((n + 2.0 * p - f)/s) +1
 
     def build_model(self):
-        input = tf.placeholder(shape=self.init_shape, dtype=tf.float64)
+        input = tf.placeholder(shape=self.init_shape, dtype=tf.float32)
 
         # 32x32x3
         conv_1 = self.convolution2D(1, input, 6, 5, 1, 'VALID')
@@ -59,6 +59,7 @@ class LeNet():
         # TODO: Do i need relu here
         fc_3 = self.fully_conected(4, fc_2, 10)
 
+        return fc_2
 
     def convolution2D(self, numOfLayer, inputIm, filters, size, stride, padding='SAME', is_batch_norm=True):
         """
@@ -76,7 +77,7 @@ class LeNet():
         with tf.variable_scope(str(numOfLayer) + "_convlayer"):
             with tf.variable_scope(str(numOfLayer) + "_conv"):
                 filtervalues = tf.Variable(tf.truncated_normal([size, size, int(channels), filters], stddev=0.001))
-                biasis = tf.Variable(tf.constant(0, shape=[filters], dtype=tf.float32))
+                biasis = tf.Variable(tf.constant(0.0, shape=[filters]))
                 conv = tf.nn.conv2d(inputIm, filtervalues, strides=[1, stride, stride, 1], padding=padding,
                                     name=str(numOfLayer) + "_conv")
                 conv = tf.add(conv, biasis)
@@ -95,9 +96,10 @@ class LeNet():
     def fully_conected(self, numOfLayer, input, out_size):
         # TODO: add scopes
         # TODO: Add batch norm
-        assert len(input.get_shape()) == 1
-        insize = input.get_shape()[0]
-        fc_w = tf.Variable(tf.truncated_normal([insize, out_size], stddev=0.001))
+        # assert len(input.get_shape()) == 1
+        print("Len: ", input.get_shape()[1])
+        insize = input.get_shape()[1]
+        fc_w = tf.Variable(tf.truncated_normal([int(insize), out_size], stddev=0.001))
         fc_b = tf.Variable(tf.zeros(out_size))
         ret = tf.matmul(input, fc_w) + fc_b
         return tf.nn.relu(ret, name=str(numOfLayer)+"_relu")
@@ -149,8 +151,4 @@ class LeNet():
 
 
 if __name__ == '__main__':
-    i = Iter()
-    print(i.get)
-    print(i.get)
-    print(i.get)
-    print(i.get)
+    mod = LeNet().build_model()
