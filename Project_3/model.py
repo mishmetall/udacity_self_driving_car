@@ -1,4 +1,7 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_eager_execution()
+
+
 
 class Iter():
     def __init__(self):
@@ -22,6 +25,9 @@ class LeNet():
         self.true = tf.placeholder(shape=[None, self.number_classes], dtype=tf.float32)
         self.ln_rate = tf.placeholder(dtype=tf.float32)
 
+        self.keep_rate = tf.placeholder(tf.float32)  # For fully-connected layers
+        # self.keep_prob_conv = tf.placeholder(tf.float32)  # For convolutional layers
+
         ###############################################################################
         # self.true = tf.placeholder(shape=(None), dtype=tf.int32)
         # self.true = tf.one_hot(self.true, self.number_classes, dtype=tf.float32)
@@ -32,6 +38,10 @@ class LeNet():
 
         self.optimizer = self._int_optimize()
 
+        # Accuracy operation
+        self.correct_prediction = tf.equal(tf.argmax(self.model, 1), tf.argmax(self.true, 1))
+        self.accuracy_operation = tf.reduce_mean(tf.cast(self.correct_prediction, tf.float32))
+
         #### FOR DEBUG
         # self.cross=None
 
@@ -39,10 +49,12 @@ class LeNet():
 
 
         with tf.variable_scope('Block_1'):
-            conv_1 = self.convolution2D(1, self.input, 6, 5, 1, 'VALID')
+            conv_1 = self.convolution2D(1, self.input, 32, 3, 1, 'VALID')
             print("Conv Block 1: ", conv_1.get_shape(), " Weights: ", self.trainable_variable())
+
             maxp_1c= tf.nn.max_pool(conv_1, ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
             print("MaxPulling 1: ", maxp_1c.get_shape(), " Weights: ", self.trainable_variable())
+            maxp_1c = tf.nn.dropout(maxp_1c, self.keep_rate)
 
 
         # 14x14x6
@@ -51,18 +63,22 @@ class LeNet():
             print("Conv Block 2: ", conv_2.get_shape(), " Weights: ", self.trainable_variable())
             maxp_2 = tf.nn.max_pool(conv_2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
             print("MaxPulling 2: ", maxp_2.get_shape(), " Weights: ", self.trainable_variable())
+            maxp_2 = tf.nn.dropout(maxp_2, self.keep_rate)
 
         with tf.variable_scope('Flatten'):
             fl = tf.layers.flatten(maxp_2)
             print("Flatten: ", fl.get_shape(), " Weights: ", self.trainable_variable())
+            fl = tf.nn.dropout(fl, self.keep_rate)
 
         with tf.variable_scope('Block_3'):
             fc_1 = self.fully_conected(3, fl, 320)
             print("Fully Block 1: ", fc_1.get_shape(), " Weights: ", self.trainable_variable())
+            fc_1 = tf.nn.dropout(fc_1, self.keep_rate)
 
         with tf.variable_scope('Block_4'):
             fc_2 = self.fully_conected(4, fc_1, 240)
             print("Fully Block 2: ", fc_2.get_shape(), " Weights: ", self.trainable_variable())
+            fc_2 = tf.nn.dropout(fc_2, self.keep_rate)
 
         # TODO: Do i need relu here
         with tf.variable_scope('Block_5'):
@@ -78,7 +94,7 @@ class LeNet():
 
 
     def _int_optimize(self):
-        optimizer = tf.train.AdagradOptimizer(learning_rate=self.ln_rate)
+        optimizer = tf.train.AdamOptimizer(learning_rate=self.ln_rate)
         return optimizer.minimize(self.loss)
 
     def convolution2D(self, numOfLayer, inputIm, filters, size, stride, padding='SAME', is_batch_norm=False):
@@ -156,7 +172,7 @@ class LeNet():
             shape = variable.get_shape()
             variable_parameters = 1
             for dim in shape:
-                variable_parameters *= dim.value
+                variable_parameters *= dim
             total_parameters += variable_parameters
         return total_parameters
 
