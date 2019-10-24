@@ -48,23 +48,23 @@ def get_data():
 
 
 
-    # def gray_scale(image):
-    #     """
-    #     Convert images to gray scale.
-    #         Parameters:
-    #             image: An np.array compatible with plt.imshow.
-    #     """
-    #     return cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    #
-    # def local_histo_equalize(image):
-    #     """
-    #     Apply local histogram equalization to grayscale images.
-    #         Parameters:
-    #             image: A grayscale image.
-    #     """
-    #     kernel = morp.disk(30)
-    #     img_local = rank.equalize(image, selem=kernel)
-    #     return img_local
+    def gray_scale(image):
+        """
+        Convert images to gray scale.
+            Parameters:
+                image: An np.array compatible with plt.imshow.
+        """
+        return cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+    def local_histo_equalize(image):
+        """
+        Apply local histogram equalization to grayscale images.
+            Parameters:
+                image: A grayscale image.
+        """
+        kernel = morp.disk(30)
+        img_local = rank.equalize(image, selem=kernel)
+        return img_local
     #
     # def image_normalize(image):
     #     """

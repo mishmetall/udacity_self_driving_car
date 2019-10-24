@@ -64,8 +64,8 @@ for e in range(EPOCH):
         x_batch, y_batch = ds_valid.get_batch(i * BATCH_SIZE, (i+1)*BATCH_SIZE - 1)
         l, s, acc = sess.run([Net.loss, Net.summary, Net.accuracy_operation],
                              feed_dict={Net.keep_rate: 1,
-                                        Net.input:x_batch,
-                                        Net.true:y_batch})
+                                        Net.input: x_batch,
+                                        Net.true:  y_batch})
         Net.summary_writer.add_summary(s, e)
         Net.summary_writer.flush()
         losses.append(l)
@@ -73,7 +73,7 @@ for e in range(EPOCH):
 
     valid_losses.append(np.mean(np.asarray(losses)))
     print("Valid loss per epoch: ", valid_losses[-1])
-    if (len(valid_losses) > 1 and valid_losses[-1] <= min(valid_losses)):
+    if ( len(valid_losses) > 1 and valid_losses[-1] <= min(valid_losses) ):
         saver.save(sess, PATH2WEIGHTS)
         print("Saved")
 

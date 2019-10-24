@@ -76,5 +76,5 @@ def process_video(path, out_path, plot=False):
 
 if __name__=="__main__":
 
-    process_video("challenge_video.mp4", "challenge_video_result.mp4")
-    process_video("project_video.mp4", "project_video_result.mp4")
+    process_video("/home/mkuznietsov/Downloads/Telegram Desktop/camera_1.mp4", "/home/mkuznietsov/Downloads/Telegram Desktop/camera_1_out.mp4")
+    # process_video("project_video.mp4", "project_video_result.mp4")

@@ -6,10 +6,15 @@ from matplotlib.widgets import Slider, Button
                 ##VIZUALIZER#
 ############################################################
 
-cap = cv2.VideoCapture("project_video.mp4")
+cap = cv2.VideoCapture("/home/mkuznietsov/Downloads/camera_1.mp4")
 
+# while True:
 re, image = cap.read()
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # cv2.imshow("image", image)
+    # cv2.waitKey(33)
+
 
 def upfate(val):
     global left_coef
