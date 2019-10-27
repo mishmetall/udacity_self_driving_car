@@ -231,8 +231,8 @@ Here is visualization of first convolution layer activations over batch of image
 
 ![Conv 1 filters][image5]
 
-We can make assumption that network tries to detect circle (map 4, 16, 20), line
-(14, 21, 22, 19), numbers (7, 11, 27 etc). Other feature maps don't activate at
+We can make assumption that network tries to detect circle (map 1, 17, 18), line
+(19, 21, 22), numbers (9, 26 etc). Other feature maps don't activate at
 all using this sign, it might activate well on other (e.g. with pedestrians or animals).
 
 Visualization of other layers doesn't give meaningful visual information.
