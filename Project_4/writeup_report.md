@@ -18,7 +18,7 @@ The goals / steps of this project are the following:
 [image4]: ./imgs/1.jpg "Image 1"
 [image5]: ./imgs/2.jpg "Image 2"
 [image6]: ./imgs/3.jpg "Image 3"
-[image7]: ./imgs/feature_maps.png "Image 4"
+[image7]: ./imgs/feature_maps.png "Feature maps"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -94,6 +94,10 @@ Here is a visualization of the architecture
 
 ![Visualization image][image3]
 
+As network was trained in an end-to-end manner, it's hart to tell where is feature-extraction layer and where is layer for inferring predicted value. However I tried to visualize feature maps for some image. We can see that it mostly detects road boundaries:
+
+![Feature maps][image7]
+
 #### 3. Creation of the Training Set & Training Process
 
 I used data provided in project. However I olso played with simulator to record my own tracks and to play with second environment.
@@ -109,3 +113,7 @@ Data contains 8036 measurements and 24108 images. I preprocessed this data by sc
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was chosen by early-stopping technique with patience 10. I used an adam optimizer so that manually training the learning rate wasn't necessary.
+
+### Simulation
+
+No tire left drivable portion while driving in real-time using simulator. Car can recover stably and drive many laps without any accidents.
