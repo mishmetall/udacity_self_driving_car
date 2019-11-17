@@ -9,6 +9,10 @@ using std::cout;
 using std::endl;
 using std::vector;
 
+#ifdef __APPLE__
+#   define sincos __sincos
+#endif
+
 /**
  * Constructor.
  */
@@ -60,11 +64,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    * Initialization
    */
   if (!is_initialized_) {
-    /**
-     * TODO: Initialize the state ekf_.x_ with the first measurement.
-     * TODO: Create the covariance matrix.
-     * You'll need to convert radar from polar to cartesian coordinates.
-     */
 
     // first measurement
     cout << "EKF: " << endl;
@@ -117,20 +116,17 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    * Prediction
    */
 
-  /**
-   * TODO: Update the state transition matrix F according to the new elapsed time.
-   * Time is measured in seconds.
-   * TODO: Update the process noise covariance matrix.
-   * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
-   */
-
+  // Update the state transition matrix F according to the new elapsed time.
+  // Time is measured in seconds.
   ekf_.F_(0, 2) = dt;
   ekf_.F_(1, 3) = dt;
 
+  // Precalculations to reduce redundant computations
   const float dt2 = dt * dt;
   const float dt3 = dt2 * dt;
   const float dt4 = dt2 * dt2;
 
+  // Update the process noise covariance matrix using noise_ax and noise_ay
   ekf_.Q_ << dt4/4*noise_ax, 0,              dt3/2*noise_ax, 0,
              0,              dt4/4*noise_ay, 0,              dt3/2*noise_ay,
              dt3/2*noise_ax, 0,              dt2*noise_ax,   0,
@@ -143,13 +139,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    * Update
    */
 
-  /**
-   * TODO:
-   * - Use the sensor type to perform the update step.
-   * - Update the state and covariance matrices.
-   */
-
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
+    // Each sensor has it's own measurement covariance matrix, so need to update accordingly
     ekf_.R_ = R_radar_;
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   } else {
