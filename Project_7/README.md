@@ -92,54 +92,23 @@ A really helpful resource for doing this project and creating smooth trajectorie
     git checkout e94b6e1
     ```
 
-## Editor Settings
+## Solution description
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+In this project I used rule-based approach to achieve no-constraints violation driving.
+Algorithm is following:
+* Keep lane if we can drive at max possible speed
+* Change lane if we are not driving at highest possible speed AND we can change line
+* If we can't change lane -> drive at highest possible speed of lane (speed of car ahead)
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+Beside of this simple logic, I transformed road to frenet space, so that I don't need to think
+how to follow lane curvature. After this if we can speed up -> speed up, if can't - use algorithm
+described above. Lane change is discrete, so we need to smooth it -> I used spline to perform 
+lane change.
 
-## Code Style
+Example of driving: [Demonstration x4](driving_x4.mp4)
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+Problems:
+- sometimes it's better to slow down and change lane according to traffic, not max speed
+- if car ahead ascillated (slows down and speeds up from time to time, my "keep speed" method fails and we drive 
+closer than safe distance)
+ 
